@@ -1,0 +1,8 @@
+secrets.yaml
+.HA_VERSION
+home-assistant*
+.vscode
+.storage
+.cloud
+node-red
+spy_mqtt.sh

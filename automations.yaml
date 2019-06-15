@@ -1,0 +1,83 @@
+- id: enable_zigbee_join
+  alias: Enable Zigbee joining
+  hide_entity: true
+  trigger:
+    platform: state
+    entity_id: input_boolean.zigbee_permit_join
+    to: 'on'
+  action:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/bridge/config/permit_join
+      payload: 'true'
+  - service: timer.start
+    data:
+      entity_id: timer.zigbee_permit_join
+- id: disable_zigbee_join
+  alias: Disable Zigbee joining
+  trigger:
+  - entity_id: input_boolean.zigbee_permit_join
+    platform: state
+    to: 'off'
+  action:
+  - data:
+      payload: 'false'
+      topic: zigbee2mqtt/bridge/config/permit_join
+    service: mqtt.publish
+  - data:
+      entity_id: timer.zigbee_permit_join
+    service: timer.cancel
+  hide_entity: true
+- id: disable_zigbee_join_timer
+  alias: Disable Zigbee joining by timer
+  hide_entity: true
+  trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.zigbee_permit_join
+  action:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/bridge/config/permit_join
+      payload: 'false'
+  - service: input_boolean.turn_off
+    data:
+      entity_id: input_boolean.zigbee_permit_join
+- id: shellies_announce
+  alias: 'Shellies Announce'
+  trigger:
+    - platform: homeassistant
+      event: start
+  action:
+    service: mqtt.publish
+    data:
+      topic: shellies/command
+      payload: announce
+- id: 'shellies_discovery'
+  alias: 'Shellies Discovery'
+  initial_state: 'on'
+  hide_entity: true
+  trigger:
+  - platform: mqtt
+    topic: shellies/announce
+  action:
+    service: python_script.shellies_discovery
+    data_template:
+      id: '{{ trigger.payload_json.id }}'
+      mac: '{{ trigger.payload_json.mac }}'
+      fw_ver: '{{ trigger.payload_json.fw_ver }}'
+- id: 'shelly_bulb_turn'
+  alias: 'Shelly turn on and off'
+  hide_entity: true
+  trigger:
+    platform: mqtt
+    topic: shellies/+/color/0/set
+  condition:
+    condition: template
+    value_template: "{{ trigger.payload_json.turn is defined }}"
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: "shellies/{{ trigger.topic.split('/')[1]}}/color/0/command"
+      payload: "{{ trigger.payload_json.turn }}"

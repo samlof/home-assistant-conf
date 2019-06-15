@@ -1,0 +1,11 @@
+- platform: dht
+  sensor: DHT22
+  name: Inside
+  pin: 4
+  monitored_conditions:
+    - temperature
+    - humidity
+- platform: mqtt
+  name: Bridge state
+  state_topic: "zigbee2mqtt/bridge/state"
+  icon: mdi:router-wireless
