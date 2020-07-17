@@ -1,25 +1,65 @@
-
 # Configure a default setup of Home Assistant (frontend, api, etc)
-default_config:
+config:
+frontend:
+person:
+history:
+  exclude:
+    entities:
+      - input_boolean.zigbee_permit_join
+      - person.samuli_lof
+      - timer.zigbee_permit_join
+      - sensor.0x00158d00023db2b8_battery
+      - sensor.0x00158d00023db2b8_click
+      - sensor.0x00158d00023db2b8_linkquality
+      - sensor.0x00158d00023db327_battery
+      - sensor.0x00158d00023db327_click
+      - sensor.0x00158d00023db327_linkquality
+      - sensor.bridge_state
+      - sensor.custom_card_tracker
+      - sensor.custom_component_tracker
+      - sensor.disk_use_percent_home
+    domains:
+      - person
+      - automation
+      - weblink
+      - updater
+logbook:
+  exclude:
+    entities:
+      - sensor.0x00158d00023db2b8_battery
+      - sensor.0x00158d00023db2b8_linkquality
+      - sensor.0x00158d00023db327_battery
+      - sensor.0x00158d00023db327_linkquality
+      - sensor.bridge_state
+      - sensor.custom_card_tracker
+      - sensor.custom_component_tracker
+      - sensor.disk_use_percent_home
+    domains:
+      - weblink
+map:
+ssdp:
+sun:
+system_health:
+updater:
+zeroconf:
 
-homeassistant:
-  customize: !include customize.yaml
-
-# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
   ip_ban_enabled: true
   login_attempts_threshold: 5
+  ssl_certificate: /ssl/fullchain.pem
+  ssl_key: /ssl/privkey.pem
+  base_url: !secret cf_base_url
+
+cloudflare:
+  email: !secret my_email
+  api_key: !secret cf_api_key
+  zone: !secret cf_zone
+  records:
+    - !secret cf_domain
 
 # Text to speech
 tts:
   - platform: google_translate
-# Cloudflare update ip
-cloudflare:
-  email: !secret my_email
-  api_key: !secret cloudflare_api
-  zone: !secret domain
-  records:
-    - hassio
 
 input_boolean:
   zigbee_permit_join:
@@ -32,12 +72,29 @@ timer:
     name: Time remaining
     duration: 600 # Updated this to the number of seconds you wish
 
+device_tracker:
+  - platform: bluetooth_tracker
+    interval_seconds: 10
+    new_device_defaults:
+      track_new_devices: false
+
 discovery:
   ignore:
-    - igd
+    - yeelight
 yeelight:
+  devices:
+    192.168.10.54:
+      name: Living room light
+      model: color2
 
-python_script: 
+custom_updater:
+#python_script:
+# https://github.com/StyraHem/ShellyForHASS
+#shelly:
+#  discovery: false
+#  devices:  #configure devices
+#    - id: 3CC259
+#name: Entrance Light
 
 sensor: !include sensors.yaml
 

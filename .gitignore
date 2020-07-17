@@ -6,3 +6,6 @@ home-assistant*
 .cloud
 node-red
 spy_mqtt.sh
+custom_components
+.uuid
+known_devices.yaml
