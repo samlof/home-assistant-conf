@@ -45,14 +45,14 @@ zeroconf:
 
 telegram_bot:
   - platform: polling
-    api_key: 1400207020:AAFif5Vp4hjiAA1SqBfGrq27GEfvbJ-zv8U
+    api_key: !secret telegram_token
     allowed_chat_ids:
-      - 72781909
+      - !secret telegram_chat_id
 
 notify:
   - platform: telegram
     name: TelegramSamuliNotifier
-    chat_id: 72781909
+    chat_id: !secret telegram_chat_id
 
 http:
   ip_ban_enabled: true
