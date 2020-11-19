@@ -43,19 +43,23 @@ system_health:
 updater:
 zeroconf:
 
+telegram_bot:
+  - platform: polling
+    api_key: 1400207020:AAFif5Vp4hjiAA1SqBfGrq27GEfvbJ-zv8U
+    allowed_chat_ids:
+      - 72781909
+
+notify:
+  - platform: telegram
+    name: TelegramSamuliNotifier
+    chat_id: 72781909
+
 http:
   ip_ban_enabled: true
   login_attempts_threshold: 5
   ssl_certificate: /ssl/fullchain.pem
   ssl_key: /ssl/privkey.pem
   base_url: !secret cf_base_url
-
-cloudflare:
-  email: !secret my_email
-  api_key: !secret cf_api_key
-  zone: !secret cf_zone
-  records:
-    - !secret cf_domain
 
 # Text to speech
 tts:
@@ -86,15 +90,6 @@ yeelight:
     192.168.10.54:
       name: Living room light
       model: color2
-
-custom_updater:
-#python_script:
-# https://github.com/StyraHem/ShellyForHASS
-#shelly:
-#  discovery: false
-#  devices:  #configure devices
-#    - id: 3CC259
-#name: Entrance Light
 
 sensor: !include sensors.yaml
 
