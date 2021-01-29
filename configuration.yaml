@@ -48,6 +48,7 @@ telegram_bot:
     api_key: !secret telegram_token
     allowed_chat_ids:
       - !secret telegram_chat_id
+mobile_app:
 
 notify:
   - platform: telegram
@@ -90,6 +91,22 @@ yeelight:
     192.168.10.54:
       name: Living room light
       model: color2
+
+# Xiaomi Air Purifier
+fan:
+  - platform: xiaomi_miio_airpurifier
+    host: 192.168.10.35
+    name: Xiaomi Air Purifier
+    token: !secret xiaomi_air_purifier_token
+    model: zhimi.airpurifier.mc2
+
+# Xiaomi Humidifier
+fan:
+  - platform: xiaomi_miio_airpurifier
+    host: 192.168.10.33
+    name: Xiaomi Humidifier
+    token: !secret xiaomi_humidifier_token
+    model: deerma.humidifier.jsq
 
 sensor: !include sensors.yaml
 
